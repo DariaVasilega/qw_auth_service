@@ -1,0 +1,29 @@
+version: "3.9"
+services:
+  qw_auth_service:
+    image: php:8.1-apache
+    container_name: qw_auth_service
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ./:/var/www/html
+      - ./docker/virtual-host.conf:/etc/apache2/sites-available/virtual-host.conf
+    depends_on:
+      - qw_auth_service_db
+    links:
+      - qw_auth_service_db:db
+
+  qw_auth_service_db:
+    image: mysql:5.7.40
+    container_name: qw_auth_service_db
+    restart: always
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./docker/mysql:/var/lib/mysql
+    environment:
+      - MYSQL_RANDOM_ROOT_PASSWORD=1
+      - MYSQL_DATABASE=auth_db
+      - MYSQL_USER=auth_usr
+      - MYSQL_PASSWORD=auth_pwd
