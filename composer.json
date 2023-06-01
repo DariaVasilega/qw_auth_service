@@ -27,6 +27,7 @@
         "illuminate/database": "*",
         "monolog/monolog": "^2.8",
         "php-di/php-di": "^6.4",
+        "robmorgan/phinx": "*",
         "slim/psr7": "^1.5",
         "slim/slim": "^4.10"
     },
