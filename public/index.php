@@ -7,6 +7,9 @@ use App\Application\Handlers\ShutdownHandler;
 use App\Application\ResponseEmitter\ResponseEmitter;
 use App\Application\Settings\SettingsInterface;
 use DI\ContainerBuilder;
+use Illuminate\Database\Capsule\Manager as Capsule;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Factory as ValidationFactory;
 use Slim\Factory\AppFactory;
 use Slim\Factory\ServerRequestCreatorFactory;
 
@@ -77,8 +80,11 @@ $errorMiddleware = $app->addErrorMiddleware($displayErrorDetails, $logError, $lo
 $errorMiddleware->setDefaultErrorHandler($errorHandler);
 
 // Boot Eloquent
-/** @var \Illuminate\Database\Capsule\Manager $capsule */
-$capsule = $container->get(\Illuminate\Database\Capsule\Manager::class);
+/** @var Capsule $capsule */
+$capsule = $container->get(Capsule::class);
+
+// Configure Illuminate Facades
+Validator::swap($container->get(ValidationFactory::class));
 
 // Run App & Emit Response
 $response = $app->handle($request);
