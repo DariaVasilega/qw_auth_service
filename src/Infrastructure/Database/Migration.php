@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Migration;
+namespace App\Infrastructure\Database;
 
-class Migration extends \Phinx\Migration\AbstractMigration {
-
+class Migration extends \Phinx\Migration\AbstractMigration
+{
     /** @var \Illuminate\Database\Capsule\Manager $capsule */
     public \Illuminate\Database\Capsule\Manager $capsule;
 
@@ -14,9 +14,9 @@ class Migration extends \Phinx\Migration\AbstractMigration {
 
     public function init(): void
     {
-        $dbConfig = require __DIR__ . '/../../app/credentials/db.php';
+        $dbConfig = require __DIR__ . '/../../../app/credentials/db.php';
 
-        $this->capsule = new \Illuminate\Database\Capsule\Manager;
+        $this->capsule = new \Illuminate\Database\Capsule\Manager();
         $this->capsule->addConnection($dbConfig);
 
         $this->capsule->bootEloquent();

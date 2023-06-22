@@ -76,6 +76,10 @@ $app->addBodyParsingMiddleware();
 $errorMiddleware = $app->addErrorMiddleware($displayErrorDetails, $logError, $logErrorDetails);
 $errorMiddleware->setDefaultErrorHandler($errorHandler);
 
+// Boot Eloquent
+/** @var \Illuminate\Database\Capsule\Manager $capsule */
+$capsule = $container->get(\Illuminate\Database\Capsule\Manager::class);
+
 // Run App & Emit Response
 $response = $app->handle($request);
 $responseEmitter = new ResponseEmitter();

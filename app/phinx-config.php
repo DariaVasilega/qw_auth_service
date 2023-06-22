@@ -8,7 +8,7 @@ return [
     'paths' => [
         'migrations' => 'migrations'
     ],
-    'migration_base_class' => \App\Migration\Migration::class,
+    'migration_base_class' => \App\Infrastructure\Database\Migration::class,
     'environments' => [
         'default_migration_table' => 'migration',
         'default_environment' => 'mainline',
