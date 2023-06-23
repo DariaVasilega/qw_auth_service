@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Application\Directory\LocaleInterface;
 use App\Application\Settings\SettingsInterface;
 use DI\ContainerBuilder;
 use Illuminate\Database\Capsule\Manager as Capsule;
@@ -43,11 +44,15 @@ return function (ContainerBuilder $containerBuilder) {
             return $capsule;
         },
         Translator::class => function (ContainerInterface $c) {
+            /** @var LocaleInterface $locale */
+            $locale = $c->get(LocaleInterface::class);
+            $localeCode = $locale->getCurrentLocale();
+
             $loader = new FileLoader(new Filesystem(), dirname(__FILE__, 2) . '/lang');
             $loader->addNamespace('lang', dirname(__FILE__, 2) . '/lang');
-            $loader->load('en_US', 'validation', 'lang');
+            $loader->load($localeCode, 'validation', 'lang');
 
-            return new Translator($loader, 'en_US');
+            return new Translator($loader, $localeCode);
         },
         ValidationFactory::class => function (ContainerInterface $c) {
             $validationFactory = new ValidationFactory($c->get(Translator::class));

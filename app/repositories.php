@@ -2,9 +2,14 @@
 
 declare(strict_types=1);
 
-use App\Infrastructure\Persistence\User\InMemoryUserRepository;
+use App\Application\Directory\Locale;
+use App\Application\Directory\LocaleInterface;
 use DI\ContainerBuilder;
 
+use function DI\autowire;
+
 return function (ContainerBuilder $containerBuilder) {
-    // TODO Map repository interfaces to the real repositories
+    $containerBuilder->addDefinitions([
+        LocaleInterface::class => autowire(Locale::class),
+    ]);
 };
