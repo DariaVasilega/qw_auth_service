@@ -24,13 +24,17 @@
     "require": {
         "php": "^7.4 || ^8.0",
         "ext-json": "*",
+        "cweagans/composer-patches": "^1.7",
         "illuminate/database": "*",
+        "illuminate/http": "*",
+        "illuminate/pagination": "*",
         "illuminate/validation": "*",
         "monolog/monolog": "^2.8",
         "php-di/php-di": "^6.4",
         "robmorgan/phinx": "*",
         "slim/psr7": "^1.5",
-        "slim/slim": "^4.10"
+        "slim/slim": "^4.10",
+        "unlu/laravel-api-query-builder": "*"
     },
     "require-dev": {
         "jangregor/phpstan-prophecy": "^1.0.0",
@@ -44,7 +48,8 @@
     },
     "config": {
         "allow-plugins": {
-            "phpstan/extension-installer": true
+            "phpstan/extension-installer": true,
+            "cweagans/composer-patches": true
         },
         "process-timeout": 0,
         "sort-packages": true
@@ -62,5 +67,16 @@
     "scripts": {
         "start": "php -S localhost:8080 -t public",
         "test": "phpunit"
+    },
+    "replace": {
+        "laravel/framework": "^9"
+    },
+    "extra": {
+        "composer-exit-on-patch-failure": true,
+        "patches": {
+            "unlu/laravel-api-query-builder": {
+                "https://github.com/DariaVasilega/qw_auth_service/issues/5#issuecomment-1607783782": "./patches/issue-5-paginator-and-uri-parser.patch"
+            }
+        }
     }
 }

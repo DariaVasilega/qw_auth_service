@@ -13,7 +13,7 @@ return function (ContainerBuilder $containerBuilder) {
     $containerBuilder->addDefinitions([
         SettingsInterface::class => function () {
             return new Settings([
-                'displayErrorDetails' => true, // TODO: disable 3 lines below in prod mod
+                'displayErrorDetails' => true,
                 'logError'            => true,
                 'logErrorDetails'     => true,
                 'logger' => [
@@ -22,6 +22,16 @@ return function (ContainerBuilder $containerBuilder) {
                     'level' => Logger::DEBUG,
                 ],
                 'db' => require __DIR__ . '/credentials/db.php',
+                'api-query-builder' => [
+                    'limit' => 15,
+                    'orderBy' => [
+                        [
+                            'column' => 'id',
+                            'direction' => 'asc'
+                        ]
+                    ],
+                    'excludedParameters' => [],
+                ],
             ]);
         }
     ]);

@@ -1,0 +1,28 @@
+diff --git a/src/QueryBuilder.php b/src/QueryBuilder.php
+index 541422b..0cc76ca 100644
+--- a/src/QueryBuilder.php
++++ b/src/QueryBuilder.php
+@@ -409,7 +409,9 @@ class QueryBuilder
+      */
+     private function basePaginate($perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
+     {
+-        $page = $page ?: BasePaginator::resolveCurrentPage($pageName);
++        if (is_null($page)) {
++            $page = $this->page ?: BasePaginator::resolveCurrentPage($pageName);
++        }
+ 
+         $perPage = $perPage ?: $this->model->getPerPage();
+ 
+diff --git a/src/UriParser.php b/src/UriParser.php
+index 55658e3..f019b61 100644
+--- a/src/UriParser.php
++++ b/src/UriParser.php
+@@ -80,7 +80,7 @@ class UriParser
+     {
+         $explode = explode('?', $uri);
+ 
+-        $this->queryUri = (isset($explode[1])) ? rawurldecode($explode[1]) : null;
++        $this->queryUri = (isset($explode[1])) ? rawurldecode($explode[1]) : '';
+     }
+ 
+     private function setQueryParameters($queryUri)

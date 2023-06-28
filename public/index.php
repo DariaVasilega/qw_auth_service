@@ -7,7 +7,9 @@ use App\Application\Handlers\ShutdownHandler;
 use App\Application\ResponseEmitter\ResponseEmitter;
 use App\Application\Settings\SettingsInterface;
 use DI\ContainerBuilder;
+use Illuminate\Contracts\Foundation\Application as IlluminateApplication;
 use Illuminate\Database\Capsule\Manager as Capsule;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Factory as ValidationFactory;
 use Slim\Factory\AppFactory;
@@ -36,6 +38,10 @@ $repositories($containerBuilder);
 
 // Build PHP-DI Container instance
 $container = $containerBuilder->build();
+
+// Set up helpers
+$helpers = require __DIR__ . '/../app/helpers.php';
+$helpers($container);
 
 // Instantiate the app
 AppFactory::setContainer($container);
@@ -84,7 +90,10 @@ $errorMiddleware->setDefaultErrorHandler($errorHandler);
 $capsule = $container->get(Capsule::class);
 
 // Configure Illuminate Facades
+/** @var IlluminateApplication $laravelAppMock */
+$laravelAppMock = ['db' => $capsule, 'db.schema' => $capsule::schema()];
 Validator::swap($container->get(ValidationFactory::class));
+Schema::setFacadeApplication($laravelAppMock);
 
 // Run App & Emit Response
 $response = $app->handle($request);
