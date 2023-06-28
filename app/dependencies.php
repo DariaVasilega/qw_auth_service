@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Application\Directory\LocaleInterface;
 use App\Application\Settings\SettingsInterface;
+use App\Infrastructure\Filesystem\Log\UserActionLogger;
 use DI\ContainerBuilder;
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Illuminate\Filesystem\Filesystem;
@@ -64,6 +65,16 @@ return function (ContainerBuilder $containerBuilder) {
             $validationFactory->setPresenceVerifier($presenceVerifier);
 
             return $validationFactory;
+        },
+        UserActionLogger::class => function (ContainerInterface $c) {
+            $logger = $c->get(LoggerInterface::class);
+            $logFile = isset($_ENV['docker']) ? 'php://stdout' : __DIR__ . '/../logs/user_action.log';
+            $handler = new StreamHandler($logFile, Logger::ERROR);
+
+            $userActionsLogger = $logger->withName('user-action');
+            $userActionsLogger->setHandlers([$handler]);
+
+            return new UserActionLogger($userActionsLogger);
         },
     ]);
 };
