@@ -7,6 +7,12 @@ use App\Application\Handlers\ShutdownHandler;
 use App\Application\ResponseEmitter\ResponseEmitter;
 use App\Application\Settings\SettingsInterface;
 use DI\ContainerBuilder;
+use Illuminate\Contracts\Foundation\Application as IlluminateApplication;
+use Illuminate\Database\Capsule\Manager as Capsule;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Translation\Translator;
+use Illuminate\Validation\Factory as ValidationFactory;
 use Slim\Factory\AppFactory;
 use Slim\Factory\ServerRequestCreatorFactory;
 
@@ -34,6 +40,10 @@ $repositories($containerBuilder);
 // Build PHP-DI Container instance
 $container = $containerBuilder->build();
 
+// Set up helpers
+$helpers = require __DIR__ . '/../app/helpers.php';
+$helpers($container);
+
 // Instantiate the app
 AppFactory::setContainer($container);
 $app = AppFactory::create();
@@ -58,12 +68,15 @@ $logErrorDetails = $settings->get('logErrorDetails');
 $serverRequestCreator = ServerRequestCreatorFactory::create();
 $request = $serverRequestCreator->createServerRequestFromGlobals();
 
+// Initialize Translator
+$translator = $container->get(Translator::class);
+
 // Create Error Handler
 $responseFactory = $app->getResponseFactory();
-$errorHandler = new HttpErrorHandler($callableResolver, $responseFactory);
+$errorHandler = new HttpErrorHandler($callableResolver, $responseFactory, $translator);
 
 // Create Shutdown Handler
-$shutdownHandler = new ShutdownHandler($request, $errorHandler, $displayErrorDetails);
+$shutdownHandler = new ShutdownHandler($request, $errorHandler, $displayErrorDetails, $translator);
 register_shutdown_function($shutdownHandler);
 
 // Add Routing Middleware
@@ -75,6 +88,16 @@ $app->addBodyParsingMiddleware();
 // Add Error Middleware
 $errorMiddleware = $app->addErrorMiddleware($displayErrorDetails, $logError, $logErrorDetails);
 $errorMiddleware->setDefaultErrorHandler($errorHandler);
+
+// Boot Eloquent
+/** @var Capsule $capsule */
+$capsule = $container->get(Capsule::class);
+
+// Configure Illuminate Facades
+/** @var IlluminateApplication $laravelAppMock */
+$laravelAppMock = ['db' => $capsule, 'db.schema' => $capsule::schema()];
+Validator::swap($container->get(ValidationFactory::class));
+Schema::setFacadeApplication($laravelAppMock);
 
 // Run App & Emit Response
 $response = $app->handle($request);

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Application\Actions;
 
+use JsonException;
 use JsonSerializable;
 
 class ActionError implements JsonSerializable
@@ -53,9 +54,15 @@ class ActionError implements JsonSerializable
     #[\ReturnTypeWillChange]
     public function jsonSerialize(): array
     {
+        try {
+            $decodedDescription = json_decode($this->description, true, 512, JSON_THROW_ON_ERROR);
+        } catch (JsonException $exception) {
+            $decodedDescription = $this->description;
+        }
+
         return [
             'type' => $this->type,
-            'description' => $this->description,
+            'description' => $decodedDescription,
         ];
     }
 }

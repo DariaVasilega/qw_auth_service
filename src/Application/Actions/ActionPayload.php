@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Application\Actions;
 
+use Illuminate\Contracts\Support\Arrayable;
 use JsonSerializable;
 
 class ActionPayload implements JsonSerializable
@@ -53,7 +54,7 @@ class ActionPayload implements JsonSerializable
         ];
 
         if ($this->data !== null) {
-            $payload['data'] = $this->data;
+            $payload['data'] = $this->data instanceof Arrayable ? $this->data->toArray() : $this->data;
         } elseif ($this->error !== null) {
             $payload['error'] = $this->error;
         }

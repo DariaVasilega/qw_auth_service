@@ -2,8 +2,15 @@
 
 declare(strict_types=1);
 
+use App\Application\Directory\LocaleInterface;
 use App\Application\Settings\SettingsInterface;
 use DI\ContainerBuilder;
+use Illuminate\Database\Capsule\Manager as Capsule;
+use Illuminate\Filesystem\Filesystem;
+use Illuminate\Translation\FileLoader;
+use Illuminate\Translation\Translator;
+use Illuminate\Validation\DatabasePresenceVerifier;
+use Illuminate\Validation\Factory as ValidationFactory;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Monolog\Processor\UidProcessor;
@@ -25,6 +32,38 @@ return function (ContainerBuilder $containerBuilder) {
             $logger->pushHandler($handler);
 
             return $logger;
+        },
+        Capsule::class => function (ContainerInterface $c) {
+            $settings = $c->get(SettingsInterface::class);
+
+            $capsule = new Capsule();
+            $capsule->addConnection($settings->get('db'));
+            $capsule->setAsGlobal();
+            $capsule->bootEloquent();
+
+            return $capsule;
+        },
+        Translator::class => function (ContainerInterface $c) {
+            /** @var LocaleInterface $locale */
+            $locale = $c->get(LocaleInterface::class);
+            $localeCode = $locale->getCurrentLocale();
+
+            $loader = new FileLoader(new Filesystem(), dirname(__FILE__, 2) . '/lang');
+            $loader->addNamespace('lang', dirname(__FILE__, 2) . '/lang');
+            $loader->load($localeCode, 'validation', 'lang');
+
+            return new Translator($loader, $localeCode);
+        },
+        ValidationFactory::class => function (ContainerInterface $c) {
+            $validationFactory = new ValidationFactory($c->get(Translator::class));
+
+            /** @var Capsule $capsule */
+            $capsule = $c->get(Capsule::class);
+            $presenceVerifier = new DatabasePresenceVerifier($capsule->getDatabaseManager());
+
+            $validationFactory->setPresenceVerifier($presenceVerifier);
+
+            return $validationFactory;
         },
     ]);
 };
