@@ -6,7 +6,11 @@ namespace App\Application\Handlers;
 
 use App\Application\Actions\ActionError;
 use App\Application\Actions\ActionPayload;
+use Illuminate\Translation\Translator;
+use JsonException;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Log\LoggerInterface;
 use Slim\Exception\HttpBadRequestException;
 use Slim\Exception\HttpException;
 use Slim\Exception\HttpForbiddenException;
@@ -15,12 +19,40 @@ use Slim\Exception\HttpNotFoundException;
 use Slim\Exception\HttpNotImplementedException;
 use Slim\Exception\HttpUnauthorizedException;
 use Slim\Handlers\ErrorHandler as SlimErrorHandler;
+use Slim\Interfaces\CallableResolverInterface;
 use Throwable;
 
+/**
+ * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
 class HttpErrorHandler extends SlimErrorHandler
 {
     /**
-     * @inheritdoc
+     * @var Translator $translator
+     */
+    private Translator $translator;
+
+    /**
+     * @param CallableResolverInterface $callableResolver
+     * @param ResponseFactoryInterface $responseFactory
+     * @param Translator $translator
+     * @param LoggerInterface|null $logger
+     */
+    public function __construct(
+        CallableResolverInterface $callableResolver,
+        ResponseFactoryInterface $responseFactory,
+        Translator $translator,
+        ?LoggerInterface $logger = null
+    ) {
+        parent::__construct($callableResolver, $responseFactory, $logger);
+
+        $this->translator = $translator;
+    }
+
+    /**
+     * @return Response
+     * @throws JsonException
      */
     protected function respond(): Response
     {
@@ -28,12 +60,12 @@ class HttpErrorHandler extends SlimErrorHandler
         $statusCode = 500;
         $error = new ActionError(
             ActionError::SERVER_ERROR,
-            'An internal error has occurred while processing your request.'
+            $this->translator->get('http.error.500')
         );
 
         if ($exception instanceof HttpException) {
             $statusCode = $exception->getCode();
-            $error->setDescription($exception->getMessage());
+            $error->setDescription($this->translateException($exception));
 
             if ($exception instanceof HttpNotFoundException) {
                 $error->setType(ActionError::RESOURCE_NOT_FOUND);
@@ -55,15 +87,24 @@ class HttpErrorHandler extends SlimErrorHandler
             && $exception instanceof Throwable
             && $this->displayErrorDetails
         ) {
-            $error->setDescription($exception->getMessage());
+            $error->setDescription($this->translateException($exception));
         }
 
         $payload = new ActionPayload($statusCode, null, $error);
-        $encodedPayload = json_encode($payload, JSON_PRETTY_PRINT);
+        $encodedPayload = json_encode($payload, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT);
 
         $response = $this->responseFactory->createResponse($statusCode);
         $response->getBody()->write($encodedPayload);
 
         return $response->withHeader('Content-Type', 'application/json');
+    }
+
+    /**
+     * @param Throwable $exception
+     * @return string
+     */
+    private function translateException(Throwable $exception): string
+    {
+        return $this->translator->get($exception->getMessage());
     }
 }

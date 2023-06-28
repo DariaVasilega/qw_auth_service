@@ -11,6 +11,7 @@ use Illuminate\Contracts\Foundation\Application as IlluminateApplication;
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Translation\Translator;
 use Illuminate\Validation\Factory as ValidationFactory;
 use Slim\Factory\AppFactory;
 use Slim\Factory\ServerRequestCreatorFactory;
@@ -67,12 +68,15 @@ $logErrorDetails = $settings->get('logErrorDetails');
 $serverRequestCreator = ServerRequestCreatorFactory::create();
 $request = $serverRequestCreator->createServerRequestFromGlobals();
 
+// Initialize Translator
+$translator = $container->get(Translator::class);
+
 // Create Error Handler
 $responseFactory = $app->getResponseFactory();
-$errorHandler = new HttpErrorHandler($callableResolver, $responseFactory);
+$errorHandler = new HttpErrorHandler($callableResolver, $responseFactory, $translator);
 
 // Create Shutdown Handler
-$shutdownHandler = new ShutdownHandler($request, $errorHandler, $displayErrorDetails);
+$shutdownHandler = new ShutdownHandler($request, $errorHandler, $displayErrorDetails, $translator);
 register_shutdown_function($shutdownHandler);
 
 // Add Routing Middleware

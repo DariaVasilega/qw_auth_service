@@ -5,25 +5,48 @@ declare(strict_types=1);
 namespace App\Application\Handlers;
 
 use App\Application\ResponseEmitter\ResponseEmitter;
+use Illuminate\Translation\Translator;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Exception\HttpInternalServerErrorException;
 
 class ShutdownHandler
 {
+    /**
+     * @var Request $request
+     */
     private Request $request;
 
+    /**
+     * @var HttpErrorHandler $errorHandler
+     */
     private HttpErrorHandler $errorHandler;
 
+    /**
+     * @var bool $displayErrorDetails
+     */
     private bool $displayErrorDetails;
 
+    /**
+     * @var Translator $translator
+     */
+    private Translator $translator;
+
+    /**
+     * @param Request $request
+     * @param HttpErrorHandler $errorHandler
+     * @param bool $displayErrorDetails
+     * @param Translator $translator
+     */
     public function __construct(
         Request $request,
         HttpErrorHandler $errorHandler,
-        bool $displayErrorDetails
+        bool $displayErrorDetails,
+        Translator $translator
     ) {
         $this->request = $request;
         $this->errorHandler = $errorHandler;
         $this->displayErrorDetails = $displayErrorDetails;
+        $this->translator = $translator;
     }
 
     public function __invoke()
@@ -34,7 +57,7 @@ class ShutdownHandler
             $errorLine = $error['line'];
             $errorMessage = $error['message'];
             $errorType = $error['type'];
-            $message = 'An error while processing your request. Please try again later.';
+            $message = 'http.shutdown';
 
             if ($this->displayErrorDetails) {
                 switch ($errorType) {
@@ -58,7 +81,7 @@ class ShutdownHandler
                 }
             }
 
-            $exception = new HttpInternalServerErrorException($this->request, $message);
+            $exception = new HttpInternalServerErrorException($this->request, $this->translator->get($message));
             $response = $this->errorHandler->__invoke(
                 $this->request,
                 $exception,
