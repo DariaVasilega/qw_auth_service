@@ -22,6 +22,7 @@ return function (ContainerBuilder $containerBuilder) {
                     'level' => Logger::DEBUG,
                 ],
                 'db' => require __DIR__ . '/credentials/db.php',
+                'encryption' => require __DIR__ . '/credentials/encryption.php',
                 'api-query-builder' => [
                     'limit' => 15,
                     'orderBy' => [
