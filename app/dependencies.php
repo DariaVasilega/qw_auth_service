@@ -48,10 +48,12 @@ return function (ContainerBuilder $containerBuilder) {
             /** @var LocaleInterface $locale */
             $locale = $c->get(LocaleInterface::class);
             $localeCode = $locale->getCurrentLocale();
+            $settings = $c->get(SettingsInterface::class);
+            $translationsPath = $settings->get('translationsPath');
 
-            $loader = new FileLoader(new Filesystem(), dirname(__FILE__, 2) . '/lang');
-            $loader->addNamespace('lang', dirname(__FILE__, 2) . '/lang');
-            $loader->load($localeCode, 'validation', 'lang');
+            $loader = new FileLoader(new Filesystem(), $translationsPath);
+            $loader->addNamespace('i18n', $translationsPath);
+            $loader->load($localeCode, 'global', 'i18n');
 
             return new Translator($loader, $localeCode);
         },

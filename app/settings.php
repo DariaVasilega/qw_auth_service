@@ -13,6 +13,14 @@ return function (ContainerBuilder $containerBuilder) {
     $containerBuilder->addDefinitions([
         SettingsInterface::class => function () {
             return new Settings([
+                'locale' => [
+                    'default' => 'en_US',
+                    'allowed' => [
+                        'en_US',
+                        'uk_UA',
+                    ],
+                ],
+                'translationsPath' => __DIR__ . '/../resources/i18n',
                 'displayErrorDetails' => true,
                 'logError'            => true,
                 'logErrorDetails'     => true,
