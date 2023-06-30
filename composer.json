@@ -32,6 +32,7 @@
         "monolog/monolog": "^2.8",
         "php-di/php-di": "^6.4",
         "robmorgan/phinx": "*",
+        "slim/console": "0.x-dev",
         "slim/psr7": "^1.5",
         "slim/slim": "^4.10",
         "unlu/laravel-api-query-builder": "*"
