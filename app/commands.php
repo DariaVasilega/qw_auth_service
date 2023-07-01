@@ -3,5 +3,5 @@
 declare(strict_types=1);
 
 return [
-    // Declare your commands here
+    \App\Console\LoadFixtures::class,
 ];

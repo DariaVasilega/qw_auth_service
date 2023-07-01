@@ -12,6 +12,8 @@ use Illuminate\Translation\FileLoader;
 use Illuminate\Translation\Translator;
 use Illuminate\Validation\DatabasePresenceVerifier;
 use Illuminate\Validation\Factory as ValidationFactory;
+use League\Flysystem\FilesystemAdapter;
+use League\Flysystem\PathPrefixer;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Monolog\Processor\UidProcessor;
@@ -77,6 +79,12 @@ return function (ContainerBuilder $containerBuilder) {
             $userActionsLogger->setHandlers([$handler]);
 
             return new UserActionLogger($userActionsLogger);
+        },
+        FilesystemAdapter::class => function (ContainerInterface $c) {
+            return new \League\Flysystem\Local\LocalFilesystemAdapter(dirname(__DIR__));
+        },
+        PathPrefixer::class => function (ContainerInterface $c) {
+            return new PathPrefixer(dirname(__DIR__));
         },
     ]);
 };
