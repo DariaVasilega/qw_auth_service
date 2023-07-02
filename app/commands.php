@@ -8,4 +8,5 @@ return [
     \App\Console\Migrations\Migrate::class,
     \App\Console\Migrations\Rollback::class,
     \App\Console\Migrations\Status::class,
+    \App\Console\RunTest::class,
 ];
