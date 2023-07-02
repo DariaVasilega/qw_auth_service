@@ -45,8 +45,8 @@ class Locale implements LocaleInterface
         $request = Request::createFromGlobals();
         $localeCode = $request->getPreferredLanguage();
 
-        return in_array($localeCode, static::ALLOWED_LOCALES, true)
+        return in_array($localeCode, config('locale.allowed') ?? static::ALLOWED_LOCALES, true)
             ? $localeCode
-            : static::DEFAULT_LOCALE;
+            : config('locale.default') ?? static::DEFAULT_LOCALE;
     }
 }

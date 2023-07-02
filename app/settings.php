@@ -13,6 +13,14 @@ return function (ContainerBuilder $containerBuilder) {
     $containerBuilder->addDefinitions([
         SettingsInterface::class => function () {
             return new Settings([
+                'locale' => [
+                    'default' => 'en_US',
+                    'allowed' => [
+                        'en_US',
+                        'uk_UA',
+                    ],
+                ],
+                'translationsPath' => __DIR__ . '/../resources/i18n',
                 'displayErrorDetails' => true,
                 'logError'            => true,
                 'logErrorDetails'     => true,
@@ -22,6 +30,7 @@ return function (ContainerBuilder $containerBuilder) {
                     'level' => Logger::DEBUG,
                 ],
                 'db' => require __DIR__ . '/credentials/db.php',
+                'encryption' => require __DIR__ . '/credentials/encryption.php',
                 'api-query-builder' => [
                     'limit' => 15,
                     'orderBy' => [

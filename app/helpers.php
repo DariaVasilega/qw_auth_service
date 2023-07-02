@@ -7,7 +7,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Psr\Container\ContainerInterface;
 
-// phpcs:disable
+// phpcs:disable PSR1.Files.SideEffects.FoundWithSymbols, PSR1.Classes.ClassDeclaration.MissingNamespace
 
 final class HelperRegistry
 {
@@ -53,6 +53,7 @@ final class HelperRegistry
              * @param string|array|int|null $value
              * @param string|array|null $key
              * @return array
+             * @phpstan-ignore-next-line
              */
             function array_pluck(iterable $array, string|array|int|null $value, string|array|null $key = null): array
             {
@@ -66,6 +67,7 @@ final class HelperRegistry
              *
              * @param string $value
              * @return string
+             * @phpstan-ignore-next-line
              */
             function studly_case(string $value): string
             {
@@ -77,13 +79,32 @@ final class HelperRegistry
             /**
              * Get the specified configuration value.
              *
-             * @param string $key
+             * @param string|null $key
              * @param mixed|null $default
              * @return mixed
+             * @phpstan-ignore-next-line
              */
-            function config(string $key = '', mixed $default = null): mixed
+            function config(string $key = null, mixed $default = null): mixed
             {
                 return Arr::get(HelperRegistry::$settings->get(), $key, $default);
+            }
+        }
+
+        if (!function_exists('container')) {
+            /**
+             * Retrieve class instance from DI Container.
+             *
+             * @param string|null $className
+             * @return object
+             * @phpstan-ignore-next-line
+             */
+            function container(string $className = null): object
+            {
+                if ($className === null) {
+                    return HelperRegistry::$container;
+                }
+
+                return HelperRegistry::$container->get($className);
             }
         }
     }

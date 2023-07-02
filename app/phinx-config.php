@@ -6,7 +6,7 @@ $dbConfig = require __DIR__ . '/credentials/db.php';
 
 return [
     'paths' => [
-        'migrations' => 'migrations'
+        'migrations' => 'resources/migrations'
     ],
     'migration_base_class' => \App\Infrastructure\Database\Migration::class,
     'environments' => [

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Application\Directory\LocaleInterface;
 use App\Application\Settings\SettingsInterface;
+use App\Infrastructure\Filesystem\Log\UserActionLogger;
 use DI\ContainerBuilder;
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Illuminate\Filesystem\Filesystem;
@@ -11,6 +12,8 @@ use Illuminate\Translation\FileLoader;
 use Illuminate\Translation\Translator;
 use Illuminate\Validation\DatabasePresenceVerifier;
 use Illuminate\Validation\Factory as ValidationFactory;
+use League\Flysystem\FilesystemAdapter;
+use League\Flysystem\PathPrefixer;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Monolog\Processor\UidProcessor;
@@ -47,10 +50,12 @@ return function (ContainerBuilder $containerBuilder) {
             /** @var LocaleInterface $locale */
             $locale = $c->get(LocaleInterface::class);
             $localeCode = $locale->getCurrentLocale();
+            $settings = $c->get(SettingsInterface::class);
+            $translationsPath = $settings->get('translationsPath');
 
-            $loader = new FileLoader(new Filesystem(), dirname(__FILE__, 2) . '/lang');
-            $loader->addNamespace('lang', dirname(__FILE__, 2) . '/lang');
-            $loader->load($localeCode, 'validation', 'lang');
+            $loader = new FileLoader(new Filesystem(), $translationsPath);
+            $loader->addNamespace('i18n', $translationsPath);
+            $loader->load($localeCode, 'global', 'i18n');
 
             return new Translator($loader, $localeCode);
         },
@@ -64,6 +69,22 @@ return function (ContainerBuilder $containerBuilder) {
             $validationFactory->setPresenceVerifier($presenceVerifier);
 
             return $validationFactory;
+        },
+        UserActionLogger::class => function (ContainerInterface $c) {
+            $logger = $c->get(LoggerInterface::class);
+            $logFile = isset($_ENV['docker']) ? 'php://stdout' : __DIR__ . '/../logs/user_action.log';
+            $handler = new StreamHandler($logFile, Logger::ERROR);
+
+            $userActionsLogger = $logger->withName('user-action');
+            $userActionsLogger->setHandlers([$handler]);
+
+            return new UserActionLogger($userActionsLogger);
+        },
+        FilesystemAdapter::class => function (ContainerInterface $c) {
+            return new \League\Flysystem\Local\LocalFilesystemAdapter(dirname(__DIR__));
+        },
+        PathPrefixer::class => function (ContainerInterface $c) {
+            return new PathPrefixer(dirname(__DIR__));
         },
     ]);
 };
