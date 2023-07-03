@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain;
 
-interface UserRepositoryInterface
+interface UserRepositoryInterface extends \App\Domain\RepositoryInterface
 {
     /**
      * @param \App\Domain\User $user
@@ -26,15 +26,6 @@ interface UserRepositoryInterface
      * @throws \App\Domain\DomainException\DomainRecordNotFoundException
      */
     public function getByEmail(string $email): \App\Domain\User;
-
-    /**
-     * @return \App\Application\SearchResultInterface
-     * @throws \App\Domain\DomainException\DomainException
-     * @throws \Exception
-     */
-    public function getList(
-        \App\Application\SearchCriteriaInterface $searchCriteria
-    ): \App\Application\SearchResultInterface;
 
     /**
      * @param \App\Domain\User $user

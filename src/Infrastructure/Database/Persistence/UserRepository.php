@@ -7,21 +7,10 @@ namespace App\Infrastructure\Database\Persistence;
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class UserRepository implements \App\Domain\UserRepositoryInterface
+class UserRepository extends \App\Infrastructure\Database\Persistence\AbstractRepository implements
+    \App\Domain\UserRepositoryInterface
 {
-    /**
-     * @var \App\Infrastructure\Database\Query\PaginatorConverter $paginatorConverter
-     */
-    private \App\Infrastructure\Database\Query\PaginatorConverter $paginatorConverter;
-
-    /**
-     * @param \App\Infrastructure\Database\Query\PaginatorConverter $paginatorConverter
-     */
-    public function __construct(
-        \App\Infrastructure\Database\Query\PaginatorConverter $paginatorConverter
-    ) {
-        $this->paginatorConverter = $paginatorConverter;
-    }
+    protected const SELECTION_KEY = 'users';
 
     /**
      * @inheritDoc
@@ -31,7 +20,7 @@ class UserRepository implements \App\Domain\UserRepositoryInterface
         try {
             return $user->save();
         } catch (\Exception $exception) {
-            $resetIncrement = \App\Domain\User::query()->max('id') - 1;
+            $resetIncrement = $user->newQuery()->max('id') - 1;
 
             $fixIncrementQuery = <<<SQL
 ALTER TABLE `{$user->getTable()}` AUTO_INCREMENT=$resetIncrement;
@@ -83,25 +72,6 @@ SQL;
         }
 
         return $user;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getList(
-        \App\Application\SearchCriteriaInterface $searchCriteria
-    ): \App\Application\SearchResultInterface {
-        try {
-            $paginator = $searchCriteria->build()->paginate();
-        } catch (\Unlu\Laravel\Api\Exceptions\UnknownColumnException | \InvalidArgumentException $exception) {
-            throw new \App\Domain\DomainException\DomainException(
-                $exception->getMessage(),
-                (int) $exception->getCode(),
-                $exception
-            );
-        }
-
-        return $this->paginatorConverter->convertToSearchResult($paginator, 'users');
     }
 
     /**
