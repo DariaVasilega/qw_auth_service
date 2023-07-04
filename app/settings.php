@@ -33,12 +33,7 @@ return function (ContainerBuilder $containerBuilder) {
                 'encryption' => require __DIR__ . '/credentials/encryption.php',
                 'api-query-builder' => [
                     'limit' => 15,
-                    'orderBy' => [
-                        [
-                            'column' => 'id',
-                            'direction' => 'asc'
-                        ]
-                    ],
+                    'orderBy' => [],
                     'excludedParameters' => [],
                 ],
             ]);
