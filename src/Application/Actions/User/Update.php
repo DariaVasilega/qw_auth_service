@@ -20,9 +20,7 @@ class Update extends Store
         $this->validate($userData);
         $this->prepare($userData);
 
-        array_walk($userData, static fn (mixed $value, string $attribute) => $user->{$attribute} = $value);
-
-        $this->save($user);
+        $this->save($user->fill($userData));
 
         return $this->sendResponse($user);
     }
@@ -42,6 +40,34 @@ class Update extends Store
         }
 
         return $user;
+    }
+
+    /**
+     * Validate user data before save
+     *
+     * @param array $userData
+     * @return bool
+     * @throws \App\Domain\DomainException\DomainRecordNotSavedException
+     * @throws \JsonException
+     */
+    protected function validate(array $userData): bool
+    {
+        $allValidationRules = $this->validationRule->getRules($userData['id'] ?? 0);
+        $suitableRules = array_intersect_key($allValidationRules, $userData);
+
+        $validator = $this->validatorFactory->make(
+            $userData,
+            $suitableRules,
+            $this->validationRule->getMessages()
+        );
+
+        if ($validator->fails()) {
+            throw new \App\Domain\DomainException\DomainRecordNotSavedException(
+                json_encode($validator->getMessageBag(), JSON_THROW_ON_ERROR)
+            );
+        }
+
+        return true;
     }
 
     /**
