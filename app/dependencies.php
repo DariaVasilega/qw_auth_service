@@ -7,7 +7,9 @@ use App\Application\Settings\SettingsInterface;
 use App\Infrastructure\Filesystem\Log\RoleActionLogger;
 use App\Infrastructure\Filesystem\Log\UserActionLogger;
 use DI\ContainerBuilder;
+use Illuminate\Container\Container as IlluminateContainer;
 use Illuminate\Database\Capsule\Manager as Capsule;
+use Illuminate\Events\Dispatcher as EventsDispatcher;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Translation\FileLoader;
 use Illuminate\Translation\Translator;
@@ -38,9 +40,10 @@ return function (ContainerBuilder $containerBuilder) {
             return $logger;
         },
         Capsule::class => function (ContainerInterface $c) {
+            $illuminateContainer = $c->get(IlluminateContainer::class);
             $settings = $c->get(SettingsInterface::class);
 
-            $capsule = new Capsule();
+            $capsule = new Capsule($illuminateContainer);
             $capsule->addConnection($settings->get('db'));
             $capsule->setAsGlobal();
             $capsule->bootEloquent();
@@ -96,6 +99,12 @@ return function (ContainerBuilder $containerBuilder) {
         },
         PathPrefixer::class => function (ContainerInterface $c) {
             return new PathPrefixer(dirname(__DIR__));
+        },
+        IlluminateContainer::class => function (ContainerInterface $c) {
+            $illuminateContainer = new IlluminateContainer();
+            $illuminateContainer->alias(EventsDispatcher::class, 'events');
+
+            return $illuminateContainer;
         },
     ]);
 };

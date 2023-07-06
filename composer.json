@@ -26,6 +26,7 @@
         "ext-json": "*",
         "cweagans/composer-patches": "^1.7",
         "illuminate/database": "*",
+        "illuminate/events": "*",
         "illuminate/http": "*",
         "illuminate/pagination": "*",
         "illuminate/validation": "*",
