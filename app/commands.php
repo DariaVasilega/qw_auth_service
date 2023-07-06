@@ -9,4 +9,5 @@ return [
     \App\Console\Migrations\Rollback::class,
     \App\Console\Migrations\Status::class,
     \App\Console\RunTest::class,
+    \App\Console\Admin\Create::class,
 ];
