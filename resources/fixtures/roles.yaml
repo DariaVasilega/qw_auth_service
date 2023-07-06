@@ -1,0 +1,4 @@
+\App\Domain\Role:
+  role_{user}:
+    code: '<current()>'
+    label: '<ucfirst(<current()>)>'
