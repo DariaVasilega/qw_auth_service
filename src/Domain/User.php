@@ -40,7 +40,6 @@ class User extends \Illuminate\Database\Eloquent\Model
         'email',
         'status',
         'password',
-        'role',
     ];
 
     /**
@@ -61,15 +60,5 @@ class User extends \Illuminate\Database\Eloquent\Model
             'user_id',
             'role_code'
         );
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected static function booted(): void
-    {
-        static::observe([
-            \App\Observer\User\RelatedRoles::class,
-        ]);
     }
 }

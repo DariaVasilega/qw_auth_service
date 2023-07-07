@@ -19,6 +19,14 @@ return function (\Slim\App $app) {
             $router->get('', \App\Application\Actions\User\Read::class);
             $router->put('', \App\Application\Actions\User\Update::class);
             $router->delete('', \App\Application\Actions\User\Delete::class);
+
+            // User Roles CRUD
+            $router->group('/roles', function (\Slim\Interfaces\RouteCollectorProxyInterface $router) {
+                $router->post('', \App\Application\Actions\User\Roles\Attach::class);
+                $router->get('', \App\Application\Actions\User\Roles\ReadList::class);
+                $router->put('', \App\Application\Actions\User\Roles\Sync::class);
+                $router->delete('', \App\Application\Actions\User\Roles\Detach::class);
+            });
         });
     });
 

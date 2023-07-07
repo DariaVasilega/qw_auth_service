@@ -37,4 +37,11 @@ class Role extends \Illuminate\Database\Eloquent\Model
         'code',
         'label',
     ];
+
+    /**
+     * @inheritDoc
+     */
+    protected $hidden = [
+        'pivot',
+    ];
 }

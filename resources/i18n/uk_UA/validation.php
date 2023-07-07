@@ -13,4 +13,5 @@ return [
     'password.letters' => ':Attribute має містити принаймні одну літеру.',
     'password.symbols' => ':Attribute має містити принаймні один символ.',
     'password.numbers' => ':Attribute має містити принаймні одне число.',
+    'request.parameter.type' => 'Параметр ":parameter" є обов\'язковим та повинен бути типу ":type"',
 ];
