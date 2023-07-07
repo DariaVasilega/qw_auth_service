@@ -8,7 +8,7 @@ namespace App\Domain;
  * @property string $code
  * @property string $label
  */
-class Role extends \Illuminate\Database\Eloquent\Model
+class Permission extends \Illuminate\Database\Eloquent\Model
 {
     /**
      * @inheritDoc
@@ -28,7 +28,7 @@ class Role extends \Illuminate\Database\Eloquent\Model
     /**
      * @inheritDoc
      */
-    protected $table = 'role';
+    protected $table = 'permission';
 
     /**
      * @inheritDoc
@@ -44,17 +44,4 @@ class Role extends \Illuminate\Database\Eloquent\Model
     protected $hidden = [
         'pivot',
     ];
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function permissions(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
-    {
-        return $this->belongsToMany(
-            \App\Domain\Permission::class,
-            'role_permission',
-            'role_code',
-            'permission_code'
-        );
-    }
 }

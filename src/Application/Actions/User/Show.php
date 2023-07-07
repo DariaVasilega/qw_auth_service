@@ -14,11 +14,8 @@ abstract class Show extends Action
      */
     protected function prepare(\App\Domain\User $user): \App\Domain\User
     {
-        foreach ($user::HIDDEN_ATTRIBUTES as $attribute) {
-            unset($user->{$attribute});
-        }
-
         if (isset($user->status)) {
+            /** @phpstan-ignore-next-line */
             $user->availability = [
                 'label' => $this->translator->get($user->status::label($user->status)),
                 'status' => $user->status,
