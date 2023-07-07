@@ -38,6 +38,14 @@ return function (\Slim\App $app) {
             $router->get('', \App\Application\Actions\Role\Read::class);
             $router->put('', \App\Application\Actions\Role\Update::class);
             $router->delete('', \App\Application\Actions\Role\Delete::class);
+
+            // Role Permissions CRUD
+            $router->group('/permissions', function (\Slim\Interfaces\RouteCollectorProxyInterface $router) {
+                $router->post('', \App\Application\Actions\Role\Permissions\Attach::class);
+                $router->get('', \App\Application\Actions\Role\Permissions\ReadList::class);
+                $router->put('', \App\Application\Actions\Role\Permissions\Sync::class);
+                $router->delete('', \App\Application\Actions\Role\Permissions\Detach::class);
+            });
         });
     });
 
