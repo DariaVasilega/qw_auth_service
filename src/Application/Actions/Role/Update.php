@@ -2,61 +2,66 @@
 
 declare(strict_types=1);
 
-namespace App\Application\Actions\User;
+namespace App\Application\Actions\Role;
 
 use Psr\Http\Message\ResponseInterface as Response;
 
-class Update extends Store
+class Update extends \App\Application\Actions\Role\Store
 {
     /**
      * @inheritDoc
      */
     protected function action(): Response
     {
-        $userData = $this->getFormData();
-        $user = $this->init($userData);
-        $userData['id'] = $user->id;
+        $roleData = $this->getFormData();
+        $role = $this->init($roleData);
 
-        $this->validate($userData);
-        $this->prepare($userData);
+        $this->validate($roleData, true);
 
-        $this->save($user->fill($userData));
+        $this->save($role->fill($roleData));
 
-        return $this->sendResponse($user);
+        return $this->sendResponse($role);
     }
 
     /**
      * @inheritDoc
      * @throws \App\Domain\DomainException\DomainException
      */
-    protected function init(array $userData): \App\Domain\User
+    protected function init(array $roleData): \App\Domain\Role
     {
         try {
-            $user = $this->userRepository->get((int) $this->resolveArg('id'));
+            $role = $this->roleRepository->get($this->resolveArg('code'));
         } catch (\App\Domain\DomainException\DomainException $exception) {
             $this->logger->error($exception);
 
             throw $exception;
         }
 
-        return $user;
+        return $role;
     }
 
     /**
      * Validate user data before save
      *
-     * @param array $userData
+     * @param array $roleData
+     * @param bool $ignoreCode
      * @return bool
      * @throws \App\Domain\DomainException\DomainRecordNotSavedException
      * @throws \JsonException
      */
-    protected function validate(array $userData): bool
+    protected function validate(array $roleData, bool $ignoreCode = false): bool
     {
-        $allValidationRules = $this->validationRule->getRules($userData['id'] ?? 0);
-        $suitableRules = array_intersect_key($allValidationRules, $userData);
+        try {
+            $roleCode = $this->resolveArg('code');
+        } catch (\Slim\Exception\HttpBadRequestException $exception) {
+            $roleCode = $roleData['code'];
+        }
+
+        $allValidationRules = $this->validationRule->getRules($roleCode, $ignoreCode);
+        $suitableRules = array_intersect_key($allValidationRules, $roleData);
 
         $validator = $this->validatorFactory->make(
-            $userData,
+            $roleData,
             $suitableRules,
             $this->validationRule->getMessages()
         );
@@ -73,7 +78,7 @@ class Update extends Store
     /**
      * @inheritDoc
      */
-    protected function sendResponse(\App\Domain\User $user): Response
+    protected function sendResponse(\App\Domain\Role $role): Response
     {
         return $this->respondWithData(['message' => $this->translator->get('action.update.success')]);
     }

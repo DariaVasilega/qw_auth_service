@@ -13,4 +13,5 @@ return [
     'password.letters' => ':Attribute must contain at least one letter.',
     'password.symbols' => ':Attribute must contain at least one symbol.',
     'password.numbers' => ':Attribute must contain at least one number.',
+    'request.parameter.type' => 'The ":parameter" parameter is required and must be type of ":type"',
 ];

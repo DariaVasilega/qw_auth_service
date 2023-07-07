@@ -97,6 +97,10 @@ abstract class Store extends Action
      */
     protected function prepare(array &$userData): void
     {
+        if (!isset($userData['password'])) {
+            return;
+        }
+
         $userData['password'] = $this->passwordService->hash($userData['password']);
     }
 

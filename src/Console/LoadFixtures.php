@@ -78,6 +78,10 @@ final class LoadFixtures extends \Symfony\Component\Console\Command\Command
 
         $keepRelatedTables = $keep || (!$truncate && !$helper->ask($input, $output, $question));
 
+        /** @phpstan-ignore-next-line */
+        $schemaBuilder = $this->connection->getSchemaBuilder();
+        $schemaBuilder->disableForeignKeyConstraints();
+
         try {
             $fixturesPaths = $this->fixturesHelper->getFixturesPaths();
             $fixturesData = $this->fixturesHelper->getFixturesData($fixturesPaths);
@@ -86,13 +90,7 @@ final class LoadFixtures extends \Symfony\Component\Console\Command\Command
 
             $this->connection->beginTransaction();
 
-            /** @phpstan-ignore-next-line */
-            $schemaBuilder = $this->connection->getSchemaBuilder();
-            $schemaBuilder->disableForeignKeyConstraints();
-
             $this->uploadFixtures($fixturesData);
-
-            $schemaBuilder->enableForeignKeyConstraints();
 
             $this->connection->commit();
         } catch (\Throwable $exception) {
@@ -103,6 +101,8 @@ final class LoadFixtures extends \Symfony\Component\Console\Command\Command
             }
 
             $this->throwException($exception);
+        } finally {
+            $schemaBuilder->enableForeignKeyConstraints();
         }
 
         $output->writeln('<info>Fixtures have been loaded successfully</info>');

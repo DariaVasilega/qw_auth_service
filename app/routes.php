@@ -12,9 +12,32 @@ return function (\Slim\App $app) {
     });
 
     // User CRUD
-    $app->get('/users', \App\Application\Actions\User\ReadList::class);
-    $app->post('/user', \App\Application\Actions\User\Create::class);
-    $app->get('/user/{id:[0-9]+}', \App\Application\Actions\User\Read::class);
-    $app->put('/user/{id:[0-9]+}', \App\Application\Actions\User\Update::class);
-    $app->delete('/user/{id:[0-9]+}', \App\Application\Actions\User\Delete::class);
+    $app->group('/user', function (\Slim\Interfaces\RouteCollectorProxyInterface $router) {
+        $router->post('', \App\Application\Actions\User\Create::class);
+        $router->get('s', \App\Application\Actions\User\ReadList::class);
+        $router->group('/{id:[0-9]+}', function (\Slim\Interfaces\RouteCollectorProxyInterface $router) {
+            $router->get('', \App\Application\Actions\User\Read::class);
+            $router->put('', \App\Application\Actions\User\Update::class);
+            $router->delete('', \App\Application\Actions\User\Delete::class);
+
+            // User Roles CRUD
+            $router->group('/roles', function (\Slim\Interfaces\RouteCollectorProxyInterface $router) {
+                $router->post('', \App\Application\Actions\User\Roles\Attach::class);
+                $router->get('', \App\Application\Actions\User\Roles\ReadList::class);
+                $router->put('', \App\Application\Actions\User\Roles\Sync::class);
+                $router->delete('', \App\Application\Actions\User\Roles\Detach::class);
+            });
+        });
+    });
+
+    // Role CRUD
+    $app->group('/role', function (\Slim\Interfaces\RouteCollectorProxyInterface $router) {
+        $router->post('', \App\Application\Actions\Role\Create::class);
+        $router->get('s', \App\Application\Actions\Role\ReadList::class);
+        $router->group('/{code:[A-z0-9_-]+}', function (\Slim\Interfaces\RouteCollectorProxyInterface $router) {
+            $router->get('', \App\Application\Actions\Role\Read::class);
+            $router->put('', \App\Application\Actions\Role\Update::class);
+            $router->delete('', \App\Application\Actions\Role\Delete::class);
+        });
+    });
 };

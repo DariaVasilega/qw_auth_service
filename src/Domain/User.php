@@ -39,6 +39,26 @@ class User extends \Illuminate\Database\Eloquent\Model
     protected $fillable = [
         'email',
         'status',
-        'password'
+        'password',
     ];
+
+    /**
+     * @inheritDoc
+     */
+    protected $with = [
+        'roles'
+    ];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany'
+     */
+    public function roles(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(
+            \App\Domain\Role::class,
+            'user_role',
+            'user_id',
+            'role_code'
+        );
+    }
 }
