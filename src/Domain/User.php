@@ -46,13 +46,6 @@ class User extends \Illuminate\Database\Eloquent\Model
     ];
 
     /**
-     * @inheritDoc
-     */
-    protected $with = [
-        'roles'
-    ];
-
-    /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function roles(): \Illuminate\Database\Eloquent\Relations\BelongsToMany

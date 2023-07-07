@@ -46,13 +46,6 @@ class Role extends \Illuminate\Database\Eloquent\Model
     ];
 
     /**
-     * @inheritDoc
-     */
-    protected $with = [
-        'permissions'
-    ];
-
-    /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function permissions(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
