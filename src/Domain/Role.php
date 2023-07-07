@@ -44,4 +44,24 @@ class Role extends \Illuminate\Database\Eloquent\Model
     protected $hidden = [
         'pivot',
     ];
+
+    /**
+     * @inheritDoc
+     */
+    protected $with = [
+        'permissions'
+    ];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function permissions(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(
+            \App\Domain\Permission::class,
+            'role_permission',
+            'role_code',
+            'permission_code'
+        );
+    }
 }

@@ -37,4 +37,11 @@ class Permission extends \Illuminate\Database\Eloquent\Model
         'code',
         'label',
     ];
+
+    /**
+     * @inheritDoc
+     */
+    protected $hidden = [
+        'pivot',
+    ];
 }
