@@ -12,10 +12,6 @@ namespace App\Domain;
  */
 class User extends \Illuminate\Database\Eloquent\Model
 {
-    public const HIDDEN_ATTRIBUTES = [
-        'password',
-    ];
-
     /**
      * @inheritDoc
      */
@@ -45,12 +41,19 @@ class User extends \Illuminate\Database\Eloquent\Model
     /**
      * @inheritDoc
      */
+    protected $hidden = [
+        'password',
+    ];
+
+    /**
+     * @inheritDoc
+     */
     protected $with = [
         'roles'
     ];
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany'
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function roles(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
