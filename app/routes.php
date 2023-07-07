@@ -40,4 +40,15 @@ return function (\Slim\App $app) {
             $router->delete('', \App\Application\Actions\Role\Delete::class);
         });
     });
+
+    // Permission CRUD
+    $app->group('/permission', function (\Slim\Interfaces\RouteCollectorProxyInterface $router) {
+        $router->post('', \App\Application\Actions\Permission\Create::class);
+        $router->get('s', \App\Application\Actions\Permission\ReadList::class);
+        $router->group('/{code:[A-z0-9_-]+}', function (\Slim\Interfaces\RouteCollectorProxyInterface $router) {
+            $router->get('', \App\Application\Actions\Permission\Read::class);
+            $router->put('', \App\Application\Actions\Permission\Update::class);
+            $router->delete('', \App\Application\Actions\Permission\Delete::class);
+        });
+    });
 };
