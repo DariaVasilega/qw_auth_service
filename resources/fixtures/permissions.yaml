@@ -1,0 +1,10 @@
+\App\Domain\Permission:
+  permission_user_{create, read, update, delete}:
+    code: 'user_<current()>'
+    label: '<ucfirst(<current()>)> Users'
+  permission_role_{create, read, update, delete}:
+    code: 'role_<current()>'
+    label: '<ucfirst(<current()>)> Roles'
+  permission_permission_{create, read, update, delete}:
+    code: 'permission_<current()>'
+    label: '<ucfirst(<current()>)> Permissions'
