@@ -1,0 +1,62 @@
+version: '3.7'
+
+volumes:
+  qw_auth-ms_db-storage:
+    name: AuthMS-DB-Storage
+
+networks:
+  qw_auth-ms_internal-communications:
+    name: qw_auth-ms_internal-communications
+    ipam:
+      config:
+        - subnet: 159.89.0.0/16
+  qw_auth-ms_db-access:
+    name: qw_auth-ms_db-access
+  qw_auth-ms_entry-point:
+    name: qw_auth-ms_entry-point
+
+services:
+  qw_auth-ms_web-server:
+    container_name: qw-auth-ms-nginx
+    image: nginx:latest
+    restart: unless-stopped
+    networks:
+      qw_auth-ms_internal-communications:
+        ipv4_address: 159.89.173.80
+      qw_auth-ms_entry-point:
+        aliases:
+          - auth.ms
+    depends_on:
+      - qw_auth-ms_process-manager
+    volumes:
+      - ./docker/virtual-host.conf:/etc/nginx/conf.d/default.conf
+      - ./docker/ssl:/etc/ssl/certs
+      - .:/var/www
+
+  qw_auth-ms_db:
+    container_name: qw-auth-ms-mysql
+    image: mysql:5.7.40
+    restart: unless-stopped
+    networks:
+      - qw_auth-ms_db-access
+    volumes:
+      - qw_auth-ms_db-storage:/var/lib/mysql
+    env_file:
+      - ./docker/db.env
+
+  qw_auth-ms_process-manager:
+    container_name: qw-auth-ms-php
+    image: blackmaizegod/php-fpm:8.2
+    restart: unless-stopped
+    networks:
+      - qw_auth-ms_db-access
+      - qw_auth-ms_internal-communications
+    depends_on:
+      - qw_auth-ms_db
+    links:
+      - qw_auth-ms_db:db
+    volumes:
+      - .:/var/www
+    environment:
+      - XDEBUG_HOST=159.89.0.1
+      - COMPOSER_VERSION=2
