@@ -1,0 +1,12 @@
+#!/bin/sh
+
+docker-compose down
+
+openssl req -x509 -newkey rsa:4096 -keyout ./docker/ssl/auth.ms.key -out ./docker/ssl/auth.ms.pem \
+  -sha256 -days 3650 -nodes -subj "/C=UA/ST=Cherkasy/L=Cherkasy/O=Daria Makarenko/OU=Daria Makarenko/CN=auth.ms"
+
+docker-compose up -d --build --force-recreate
+
+docker exec -it qw-auth-ms-php composer install
+docker exec -it qw-auth-ms-php php bin/console migrations:migrate
+docker exec -it qw-auth-ms-php php bin/console fixtures:load -t

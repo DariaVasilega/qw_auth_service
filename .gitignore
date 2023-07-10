@@ -8,6 +8,7 @@
 .phpunit.result.cache
 
 docker
+!docker/ssl/.gitkeep
 !docker/virtual-host.conf
 credentials
 !credentials/.gitkeep
