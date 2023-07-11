@@ -2,8 +2,7 @@
 
 docker-compose down
 
-openssl req -x509 -newkey rsa:4096 -keyout ./docker/ssl/auth.ms.key -out ./docker/ssl/auth.ms.pem \
-  -sha256 -days 3650 -nodes -subj "/C=UA/ST=Cherkasy/L=Cherkasy/O=Daria Makarenko/OU=Daria Makarenko/CN=auth.ms"
+mkcert -cert-file ./docker/ssl/auth.ms.pem -key-file ./docker/ssl/auth.ms.key auth.ms
 
 docker-compose up -d --build --force-recreate
 
