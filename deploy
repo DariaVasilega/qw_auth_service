@@ -7,6 +7,9 @@ openssl req -x509 -newkey rsa:4096 -keyout ./docker/ssl/auth.ms.key -out ./docke
 
 docker-compose up -d --build --force-recreate
 
-docker exec -it qw-auth-ms-php composer install
+# Installing composer package `unlu/laravel-api-query-builder` fix
+if ! eval "docker exec -it qw-auth-ms-php composer install"; then
+  docker exec -it qw-auth-ms-php composer install
+fi;
 docker exec -it qw-auth-ms-php php bin/console migrations:migrate
 docker exec -it qw-auth-ms-php php bin/console fixtures:load -t
