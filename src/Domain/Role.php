@@ -7,6 +7,7 @@ namespace App\Domain;
 /**
  * @property string $code
  * @property string $label
+ * @property \Illuminate\Database\Eloquent\Collection $permissions
  */
 class Role extends \Illuminate\Database\Eloquent\Model
 {

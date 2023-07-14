@@ -9,6 +9,7 @@ namespace App\Domain;
  * @property string $email
  * @property \App\Domain\User\Status $status
  * @property string $password
+ * @property \Illuminate\Database\Eloquent\Collection $roles
  */
 class User extends \Illuminate\Database\Eloquent\Model
 {

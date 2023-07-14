@@ -8,6 +8,7 @@ namespace App\Domain;
  * @property string $email
  * @property string $token
  * @property string $expiration
+ * @property \App\Domain\User $user
  */
 class Auth extends \Illuminate\Database\Eloquent\Model
 {
