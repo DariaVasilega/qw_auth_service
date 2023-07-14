@@ -2,14 +2,11 @@
 
 declare(strict_types=1);
 
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
-
 return function (\Slim\App $app) {
-    $app->options('/{routes:.*}', function (Request $request, Response $response) {
-        // CORS Pre-Flight OPTIONS Request Handler
-        return $response;
-    });
+    // Auth Actions
+    $app->post('/login', \App\Application\Actions\Auth\Login::class);
+    $app->post('/logout', \App\Application\Actions\Auth\Logout::class);
+    $app->get('/auth', \App\Application\Actions\Auth\Index::class);
 
     // User CRUD
     $app->group('/user', function (\Slim\Interfaces\RouteCollectorProxyInterface $router) {
