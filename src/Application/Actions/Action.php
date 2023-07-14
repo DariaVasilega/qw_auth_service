@@ -6,6 +6,7 @@ namespace App\Application\Actions;
 
 use App\Domain\DomainException\DomainException;
 use App\Domain\DomainException\DomainRecordNotFoundException;
+use App\Service\AuthenticationException;
 use Illuminate\Translation\Translator;
 use JsonException;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -13,6 +14,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Log\LoggerInterface;
 use Slim\Exception\HttpBadRequestException;
 use Slim\Exception\HttpNotFoundException;
+use Slim\Exception\HttpUnauthorizedException;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
@@ -72,6 +74,9 @@ abstract class Action
             throw new HttpNotFoundException($this->request, $exception->getMessage());
         } catch (DomainException $exception) {
             throw new HttpBadRequestException($this->request, $exception->getMessage());
+        /** @phpstan-ignore-next-line */
+        } catch (AuthenticationException $exception) {
+            throw new HttpUnauthorizedException($this->request, $exception->getMessage());
         }
     }
 

@@ -20,6 +20,12 @@ return function (ContainerBuilder $containerBuilder) {
                         'uk_UA',
                     ],
                 ],
+                'auth' => [
+                    'token' => [
+                        'length' => 63,
+                        'expiration' => '+4 hours',
+                    ]
+                ],
                 'translationsPath' => __DIR__ . '/../resources/i18n',
                 'displayErrorDetails' => true,
                 'logError'            => true,
