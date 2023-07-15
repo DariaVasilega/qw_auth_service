@@ -26,6 +26,13 @@ return function (ContainerBuilder $containerBuilder) {
                         'expiration' => '+4 hours',
                     ]
                 ],
+                'allowedClients' => [
+                    /*
+                     * 'domain.com',
+                     * 'another-domain.org',
+                     * ...
+                     */
+                ],
                 'translationsPath' => __DIR__ . '/../resources/i18n',
                 'displayErrorDetails' => true,
                 'logError'            => true,
