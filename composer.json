@@ -39,7 +39,8 @@
         "slim/php-view": "*",
         "slim/psr7": "^1.5",
         "slim/slim": "^4.10",
-        "unlu/laravel-api-query-builder": "*"
+        "unlu/laravel-api-query-builder": "*",
+        "zircote/swagger-php": "*"
     },
     "require-dev": {
         "jangregor/phpstan-prophecy": "^1.0.0",
