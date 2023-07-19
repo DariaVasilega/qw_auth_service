@@ -23,6 +23,7 @@ use Monolog\Logger;
 use Monolog\Processor\UidProcessor;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
+use Slim\Views\PhpRenderer as TemplateEngine;
 
 return function (ContainerBuilder $containerBuilder) {
     $containerBuilder->addDefinitions([
@@ -116,6 +117,9 @@ return function (ContainerBuilder $containerBuilder) {
             $illuminateContainer->alias(EventsDispatcher::class, 'events');
 
             return $illuminateContainer;
+        },
+        TemplateEngine::class => function (ContainerInterface $c) {
+            return new TemplateEngine(__DIR__ . '/../resources/templates');
         },
     ]);
 };

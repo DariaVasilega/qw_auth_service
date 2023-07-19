@@ -3,6 +3,9 @@
 declare(strict_types=1);
 
 return function (\Slim\App $app) {
+    // Swagger
+    $app->get('/swagger', \App\Application\Actions\Swagger::class);
+
     // Auth Actions
     $app->post('/login', \App\Application\Actions\Auth\Login::class);
     $app->post('/logout', \App\Application\Actions\Auth\Logout::class);
