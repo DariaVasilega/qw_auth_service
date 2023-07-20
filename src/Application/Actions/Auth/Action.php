@@ -4,6 +4,15 @@ declare(strict_types=1);
 
 namespace App\Application\Actions\Auth;
 
+use OpenApi\Annotations as OA;
+
+/**
+ * @OA\SecurityScheme(
+ *   securityScheme="token",
+ *   type="http",
+ *   scheme="bearer"
+ * ),
+ */
 abstract class Action extends \App\Application\Actions\Action
 {
     /**
