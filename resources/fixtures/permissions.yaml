@@ -8,3 +8,9 @@
   permission_permission_{create, read, update, delete}:
     code: 'permission_<current()>'
     label: '<ucfirst(<current()>)> Permissions'
+  permission_position_{create, read, update, delete}:
+    code: 'position_<current()>'
+    label: '<ucfirst(<current()>)> Positions'
+  permission_position_history_{create, read, update, delete}:
+    code: 'position_history_<current()>'
+    label: '<ucfirst(<current()>)> Position History'
