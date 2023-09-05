@@ -11,7 +11,20 @@ $entity = new class extends \Illuminate\Database\Eloquent\Model {
 
 $permissions = [];
 
-foreach (['user', 'role', 'permission', 'position', 'position_history'] as $entityType) {
+$entityTypes = [
+    'user',
+    'role',
+    'permission',
+    'position',
+    'position_history',
+    'lection',
+    'test',
+    'question',
+    'answer',
+    'score'
+];
+
+foreach ($entityTypes as $entityType) {
     foreach (['create', 'read', 'update', 'delete'] as $action) {
         $permissions[] = "${entityType}_${action}";
     }
