@@ -14,3 +14,18 @@
   permission_position_history_{create, read, update, delete}:
     code: 'position_history_<current()>'
     label: '<ucfirst(<current()>)> Position History'
+  permission_lection_{create, read, update, delete}:
+    code: 'lection_<current()>'
+    label: '<ucfirst(<current()>)> Lections'
+  permission_test_{create, read, update, delete}:
+    code: 'test_<current()>'
+    label: '<ucfirst(<current()>)> Tests'
+  permission_question_{create, read, update, delete}:
+    code: 'question_<current()>'
+    label: '<ucfirst(<current()>)> Questions'
+  permission_answer_{create, read, update, delete}:
+    code: 'answer_<current()>'
+    label: '<ucfirst(<current()>)> Answers'
+  permission_score_{create, read, update, delete}:
+    code: 'score_<current()>'
+    label: '<ucfirst(<current()>)> Scores'
