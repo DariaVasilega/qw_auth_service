@@ -13,6 +13,7 @@ return function (ContainerBuilder $containerBuilder) {
     $containerBuilder->addDefinitions([
         SettingsInterface::class => function () {
             return new Settings([
+                'production' => false,
                 'locale' => [
                     'default' => 'en_US',
                     'allowed' => [

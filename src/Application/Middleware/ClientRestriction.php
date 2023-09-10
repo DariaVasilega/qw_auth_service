@@ -30,8 +30,10 @@ class ClientRestriction implements \Psr\Http\Server\MiddlewareInterface
         $serverParams = $request->getServerParams();
         $client = str_replace(['https://', 'http://'], '', $serverParams['HTTP_REFERER'] ?? '');
         $client = rtrim($client, '/');
+        $requestPermitted = !$this->settings->get('production')
+            || in_array($client, $this->settings->get('allowedClients'), true);
 
-        if (!in_array($client, $this->settings->get('allowedClients'), true)) {
+        if (!$requestPermitted) {
             throw new \Slim\Exception\HttpForbiddenException($request, 'http.error.403');
         }
 
