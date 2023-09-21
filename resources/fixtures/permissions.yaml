@@ -29,3 +29,15 @@
   permission_score_{create, read, update, delete}:
     code: 'score_<current()>'
     label: '<ucfirst(<current()>)> Scores'
+  permission_latest_lection_statistic:
+    code: 'latest_lection_statistic'
+    label: 'See latest lection completion percent and users, which not finished it'
+  permission_most_perspective_users_statistic:
+    code: 'most_perspective_users_statistic'
+    label: 'See most perspective users'
+  permission_lections_statistic:
+    code: 'lections_statistic'
+    label: 'See last lections statistic'
+  permission_user_changes_statistic:
+    code: 'user_changes_statistic'
+    label: 'See last user changes'

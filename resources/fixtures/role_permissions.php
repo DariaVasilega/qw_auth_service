@@ -35,6 +35,22 @@ return [
         'relation_admin_role_permission_{' . implode(', ', $permissions) . '}' => [
             'role_code' => 'admin',
             'permission_code' => '<current()>',
-        ]
+        ],
+        'relation_admin_role_permission_latest_lection_statistic' => [
+            'role_code' => 'admin',
+            'permission_code' => 'latest_lection_statistic',
+        ],
+        'relation_admin_role_permission_most_perspective_users_statistic' => [
+            'role_code' => 'admin',
+            'permission_code' => 'most_perspective_users_statistic',
+        ],
+        'relation_admin_role_permission_lections_statistic' => [
+            'role_code' => 'admin',
+            'permission_code' => 'lections_statistic',
+        ],
+        'relation_admin_role_permission_user_changes_statistic' => [
+            'role_code' => 'admin',
+            'permission_code' => 'user_changes_statistic',
+        ],
     ],
 ];
