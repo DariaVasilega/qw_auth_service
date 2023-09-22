@@ -29,6 +29,9 @@
   permission_score_{create, read, update, delete}:
     code: 'score_<current()>'
     label: '<ucfirst(<current()>)> Scores'
+  permission_admin_dashboard:
+    code: 'admin_dashboard'
+    label: 'See Admin Dashboard'
   permission_latest_lection_statistic:
     code: 'latest_lection_statistic'
     label: 'See latest lection completion percent and users, which not finished it'

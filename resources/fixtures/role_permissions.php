@@ -36,6 +36,10 @@ return [
             'role_code' => 'admin',
             'permission_code' => '<current()>',
         ],
+        'relation_admin_role_permission_admin_dashboard' => [
+            'role_code' => 'admin',
+            'permission_code' => 'admin_dashboard',
+        ],
         'relation_admin_role_permission_latest_lection_statistic' => [
             'role_code' => 'admin',
             'permission_code' => 'latest_lection_statistic',
