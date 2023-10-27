@@ -66,6 +66,18 @@ final class Authorization
             $this->settings->get('auth')['token']['expiration'] ?? self::DEFAULT_TOKEN_EXPIRATION
         ));
 
+        /** @var \App\Domain\Auth|null $currentAuthEntry */
+        $currentAuthEntry = $this->queryBuilder
+            ->newQuery()
+            ->select()
+            ->where('email', $email)
+            ->where('expiration', '>', date('Y-m-d H:i:s'))
+            ->first();
+
+        if ($currentAuthEntry) {
+            return $currentAuthEntry->token;
+        }
+
         $this->queryBuilder
             ->newQuery()
             ->updateOrInsert(
